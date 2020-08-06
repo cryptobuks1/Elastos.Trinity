@@ -3,40 +3,60 @@ sudo: true
 
 matrix:
   include:
-    - os: osx
-      osx_image: xcode11.4
-      env: NODEJS_VERSION=12 NDK=r18b BUILD_TARGET=runtime BUILD_PLATFORM=ios
-      if: NOT tag IS present OR tag !~ /^(daily)/
-      addons:
-        homebrew:
-          update: true
-          taps: homebrew/cask-versions
-          casks: adoptopenjdk8
-      script:
-        # "| grep -v 'Applications\|export\|codesign'": just reduce the log size
-        - $TRAVIS_BUILD_DIR/ToolChains/bin/build $BUILD_TARGET -pf $BUILD_PLATFORM --buildarg "| grep -v 'Applications\|export\|codesign'"
+    # - os: osx
+    #   osx_image: xcode11.4
+    #   env: NODEJS_VERSION=12 NDK=r18b BUILD_TARGET=runtime BUILD_PLATFORM=ios
+    #   if: NOT tag IS present OR tag !~ /^(daily)/
+    #   addons:
+    #     homebrew:
+    #       update: true
+    #       taps: homebrew/cask-versions
+    #       casks: adoptopenjdk8
+    #   script:
+    #     # "| grep -v 'Applications\|export\|codesign'": just reduce the log size
+    #     - $TRAVIS_BUILD_DIR/ToolChains/bin/build $BUILD_TARGET -pf $BUILD_PLATFORM --buildarg "| grep -v 'Applications\|export\|codesign'"
 
-    - language: android
-      dist: trusty
-      env: NODEJS_VERSION=12 NDK=r18b BUILD_TARGET=launcher BUILD_PLATFORM=android DEPLOY=TRUE CACHE_NAME=android
-      if: NOT tag IS present OR tag !~ /^(daily)/
-      android:
-        components:
-          - tools
-          - platform-tools
-          - build-tools-28.0.3
-          - android-28
-        licenses:
-          - 'android-sdk-preview-license-.+'
-          - 'android-sdk-license-.+'
-          - 'google-gdk-license-.+'
+    - os: osx
+        osx_image: xcode11.4
+        env: NODEJS_VERSION=12 NDK=r18b BUILD_TARGET=launcher BUILD_PLATFORM=electron
+        if: NOT tag IS present OR tag !~ /^(daily)/
+        addons:
+          homebrew:
+            update: true
+            taps: homebrew/cask-versions
+            casks: adoptopenjdk8
+        script:
+          # "| grep -v 'Applications\|export\|codesign'": just reduce the log size
+          - $TRAVIS_BUILD_DIR/ToolChains/bin/build $BUILD_TARGET -pf $BUILD_PLATFORM
+
+    # - language: android
+    #   dist: trusty
+    #   env: NODEJS_VERSION=12 NDK=r18b BUILD_TARGET=launcher BUILD_PLATFORM=android DEPLOY=TRUE CACHE_NAME=android
+    #   if: NOT tag IS present OR tag !~ /^(daily)/
+    #   android:
+    #     components:
+    #       - tools
+    #       - platform-tools
+    #       - build-tools-28.0.3
+    #       - android-28
+    #     licenses:
+    #       - 'android-sdk-preview-license-.+'
+    #       - 'android-sdk-license-.+'
+    #       - 'google-gdk-license-.+'
+
+    # - env: NODEJS_VERSION=12 BUILD_TARGET=dapp CACHE_NAME=dapp
+    #   dist: xenial
+    #   if: NOT tag IS present OR tag !~ /^(daily)/
+    #   before_install:
+    #   script:
+    #     - $TRAVIS_BUILD_DIR/ToolChains/bin/build dapp
 
     - env: NODEJS_VERSION=12 BUILD_TARGET=dapp CACHE_NAME=dapp
       dist: xenial
       if: NOT tag IS present OR tag !~ /^(daily)/
       before_install:
       script:
-        - $TRAVIS_BUILD_DIR/ToolChains/bin/build dapp
+        - $TRAVIS_BUILD_DIR/ToolChains/bin/build launcher -pf electron
 
 before_install:
   - wget -q https://services.gradle.org/distributions/gradle-5.4.1-bin.zip
