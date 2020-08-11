@@ -78,7 +78,8 @@ install:
       tar xvf trinity-secret.tar;
       mv google-services.json Runtime;
       mv GoogleService-Info.plist Runtime;
-      export APPSUFFIX=$(date +'%Y%m%d%H')-$(git log --format=%h -1);
+      export COMMITID=$(git log --format=%h -1);
+      export APPSUFFIX=$(date +'%Y%m%d%H')-$COMMITID;
       export APPNAME=Trinity-${APPSUFFIX}.apk;
       export TRAVIS_TAG="daily"-$APPSUFFIX;
     else
@@ -89,6 +90,7 @@ script:
   - if [[ "$DEPLOY" != "" ]]; then
       $TRAVIS_BUILD_DIR/ToolChains/bin/build partners -pf $BUILD_PLATFORM;
       sed -i 's/protectList/protectList-disable/' $TRAVIS_BUILD_DIR/Runtime/www_files/config/config.json;
+      sed -i "s/versionName \"[0-9.]*/&.${COMMITID}/" $TRAVIS_BUILD_DIR/Runtime/scripts/patches/after_platform_add_android/build_gradle.patch;
     fi
   - export APK_PATH=$TRAVIS_BUILD_DIR/Runtime/platforms/android/app/build/outputs/apk/debug
   - $TRAVIS_BUILD_DIR/ToolChains/bin/build $BUILD_TARGET -pf $BUILD_PLATFORM
