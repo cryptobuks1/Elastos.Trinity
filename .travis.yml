@@ -50,14 +50,28 @@ matrix:
     #   script:
     #     - $TRAVIS_BUILD_DIR/ToolChains/bin/build dapp
 
-    - env: NODEJS_VERSION=12 BUILD_TARGET=dapp CACHE_NAME=dapp
-      dist: xenial
+    - language: android
+      dist: trusty
+      env: NODEJS_VERSION=12 NDK=r18b BUILD_TARGET=runtime BUILD_PLATFORM=android DEPLOY=TRUE CACHE_NAME=android
       if: NOT tag IS present OR tag !~ /^(daily)/
-      before_install:
-      script:
-        - $TRAVIS_BUILD_DIR/ToolChains/bin/build tsc
-        - $TRAVIS_BUILD_DIR/ToolChains/bin/build npm
-        - $TRAVIS_BUILD_DIR/ToolChains/bin/build runtime -pf electron
+      android:
+        components:
+          - tools
+          - platform-tools
+          - build-tools-28.0.3
+          - android-28
+        licenses:
+          - 'android-sdk-preview-license-.+'
+          - 'android-sdk-license-.+'
+          - 'google-gdk-license-.+'
+    # - env: NODEJS_VERSION=12 BUILD_TARGET=dapp CACHE_NAME=dapp
+    #   dist: xenial
+    #   if: NOT tag IS present OR tag !~ /^(daily)/
+    #   before_install:
+    #   script:
+    #     - $TRAVIS_BUILD_DIR/ToolChains/bin/build tsc
+    #     - $TRAVIS_BUILD_DIR/ToolChains/bin/build npm
+    #     - $TRAVIS_BUILD_DIR/ToolChains/bin/build runtime -pf electron
 
 before_install:
   - wget -q https://services.gradle.org/distributions/gradle-5.4.1-bin.zip
@@ -107,13 +121,16 @@ install:
     fi
 
 script:
-  - if [[ "$DEPLOY" != "" ]]; then
-      $TRAVIS_BUILD_DIR/ToolChains/bin/build partners -pf $BUILD_PLATFORM;
-      sed -i 's/protectList/protectList-disable/' $TRAVIS_BUILD_DIR/Runtime/www_files/config/config.json;
-    fi
-  - export APK_PATH=$TRAVIS_BUILD_DIR/Runtime/platforms/android/app/build/outputs/apk/debug
-  - $TRAVIS_BUILD_DIR/ToolChains/bin/build $BUILD_TARGET -pf $BUILD_PLATFORM
-  - ls -l $APK_PATH
+  - $TRAVIS_BUILD_DIR/ToolChains/bin/build tsc
+  - $TRAVIS_BUILD_DIR/ToolChains/bin/build npm
+  - $TRAVIS_BUILD_DIR/ToolChains/bin/build runtime -pf electron
+#   - if [[ "$DEPLOY" != "" ]]; then
+#       $TRAVIS_BUILD_DIR/ToolChains/bin/build partners -pf $BUILD_PLATFORM;
+#       sed -i 's/protectList/protectList-disable/' $TRAVIS_BUILD_DIR/Runtime/www_files/config/config.json;
+#     fi
+#   - export APK_PATH=$TRAVIS_BUILD_DIR/Runtime/platforms/android/app/build/outputs/apk/debug
+#   - $TRAVIS_BUILD_DIR/ToolChains/bin/build $BUILD_TARGET -pf $BUILD_PLATFORM
+#   - ls -l $APK_PATH
 
 after_success:
   - if [[ "$DEPLOY" != "" ]]; then
