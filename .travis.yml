@@ -18,7 +18,7 @@ matrix:
 
     - os: osx
       osx_image: xcode11.4
-      env: NODEJS_VERSION=12 NDK=r18b BUILD_TARGET=launcher BUILD_PLATFORM=electron
+      env: NODEJS_VERSION=12 NDK=r18b BUILD_TARGET=runtime BUILD_PLATFORM=electron
       if: NOT tag IS present OR tag !~ /^(daily)/
       addons:
         homebrew:
@@ -55,7 +55,7 @@ matrix:
       if: NOT tag IS present OR tag !~ /^(daily)/
       before_install:
       script:
-        - $TRAVIS_BUILD_DIR/ToolChains/bin/build launcher -pf electron
+        - $TRAVIS_BUILD_DIR/ToolChains/bin/build runtime -pf electron
 
 before_install:
   - wget -q https://services.gradle.org/distributions/gradle-5.4.1-bin.zip
@@ -84,8 +84,6 @@ before_install:
 
 install:
   - nvm install ${NODEJS_VERSION}
-  - npm i -g npm
-  - npm cache clean -f
   - npm install -g cordova @ionic/cli
   - if [[ "$TRAVIS_EVENT_TYPE" == "cron" && "$TRAVIS_BRANCH" == "master" && "$DEPLOY" != "" ]]; then
       .ci_scripts/checkCommit.sh;
@@ -136,10 +134,10 @@ cache:
   - $HOME/.gradle/wrapper/
   - $HOME/.cocoapods/
 
-notifications:
-  email:
-  - raozhiming@trinity-tech.io
-  - benjaminpiette@elastos-fusion.org
+# notifications:
+#   email:
+#   - raozhiming@trinity-tech.io
+#   - benjaminpiette@elastos-fusion.org
 
 before_deploy:
   # Set up git user name and tag this commit
