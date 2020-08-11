@@ -16,17 +16,17 @@ matrix:
     #     # "| grep -v 'Applications\|export\|codesign'": just reduce the log size
     #     - $TRAVIS_BUILD_DIR/ToolChains/bin/build $BUILD_TARGET -pf $BUILD_PLATFORM --buildarg "| grep -v 'Applications\|export\|codesign'"
 
-    - os: osx
-      osx_image: xcode11.4
-      env: NODEJS_VERSION=12 NDK=r18b BUILD_TARGET=runtime BUILD_PLATFORM=electron
-      if: NOT tag IS present OR tag !~ /^(daily)/
-      addons:
-        homebrew:
-          update: true
-          taps: homebrew/cask-versions
-          casks: adoptopenjdk8
-      script:
-        - $TRAVIS_BUILD_DIR/ToolChains/bin/build $BUILD_TARGET -pf $BUILD_PLATFORM
+    # - os: osx
+    #   osx_image: xcode11.4
+    #   env: NODEJS_VERSION=12 NDK=r18b BUILD_TARGET=runtime BUILD_PLATFORM=electron
+    #   if: NOT tag IS present OR tag !~ /^(daily)/
+    #   addons:
+    #     homebrew:
+    #       update: true
+    #       taps: homebrew/cask-versions
+    #       casks: adoptopenjdk8
+    #   script:
+    #     - $TRAVIS_BUILD_DIR/ToolChains/bin/build $BUILD_TARGET -pf $BUILD_PLATFORM
 
     # - language: android
     #   dist: trusty
@@ -55,6 +55,8 @@ matrix:
       if: NOT tag IS present OR tag !~ /^(daily)/
       before_install:
       script:
+        - $TRAVIS_BUILD_DIR/ToolChains/bin/build tsc
+        - $TRAVIS_BUILD_DIR/ToolChains/bin/build npm
         - $TRAVIS_BUILD_DIR/ToolChains/bin/build runtime -pf electron
 
 before_install:
