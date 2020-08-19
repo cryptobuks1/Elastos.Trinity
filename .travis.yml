@@ -28,7 +28,10 @@ matrix:
       script:
         - $TRAVIS_BUILD_DIR/ToolChains/bin/build tsc
         - cd $TRAVIS_BUILD_DIR/Runtime
-        - npm install balanced-match
+        - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+            npm install;
+            npm install;
+        fi
         - $TRAVIS_BUILD_DIR/ToolChains/bin/build npm
         - $TRAVIS_BUILD_DIR/ToolChains/bin/build $BUILD_TARGET -pf $BUILD_PLATFORM
 
