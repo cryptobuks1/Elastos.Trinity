@@ -26,7 +26,7 @@ matrix:
           taps: homebrew/cask-versions
           casks: adoptopenjdk8
       script:
-        - $TRAVIS_BUILD_DIR/ToolChains/bin/build tsc
+        # - $TRAVIS_BUILD_DIR/ToolChains/bin/build tsc
         - cd $TRAVIS_BUILD_DIR/Runtime
         - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
             npm install;
@@ -34,7 +34,7 @@ matrix:
           fi
         - cd $TRAVIS_BUILD_DIR
         - pwd
-        - $TRAVIS_BUILD_DIR/ToolChains/bin/build npm
+        # - $TRAVIS_BUILD_DIR/ToolChains/bin/build npm
         - $TRAVIS_BUILD_DIR/ToolChains/bin/build $BUILD_TARGET -pf $BUILD_PLATFORM
 
     # - language: android
