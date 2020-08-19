@@ -32,6 +32,8 @@ matrix:
             npm install;
             npm install;
           fi
+        - cd $TRAVIS_BUILD_DIR
+        - pwd
         - $TRAVIS_BUILD_DIR/ToolChains/bin/build npm
         - $TRAVIS_BUILD_DIR/ToolChains/bin/build $BUILD_TARGET -pf $BUILD_PLATFORM
 
